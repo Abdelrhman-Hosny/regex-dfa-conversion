@@ -50,9 +50,9 @@ def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
                     set_alnum_state(
                         char, NFA, f"S{current_state}", f"S{current_state + 1}"
                     )
+                    if bracket_type == "(" or bracket_type is None:
+                        current_state += 1
 
-                if bracket_type == "(" or bracket_type is None:
-                    current_state += 1
                 i += 1
             if bracket_type == "[":
                 current_state += 1
@@ -65,7 +65,7 @@ def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
                     current_state, new_NFA = regex_operators[
                         regex[current_outer_bracket[1] + 1]
                     ](
-                        regex[i + 1 : current_outer_bracket[1]],
+                        regex[i + 1: current_outer_bracket[1]],
                         NFA,
                         current_state,
                         bracket_type=regex[i],
@@ -75,19 +75,12 @@ def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
                 else:
                     # we are at the start of the outer bracket
                     current_state, new_NFA = get_regex(
-                        regex[i + 1 : current_outer_bracket[1]],
+                        regex[i + 1: current_outer_bracket[1]],
                         {f"S{current_state}": {}},
                         current_state,
                         True,
                     )
                     i = current_outer_bracket[1] + 1
-                if detect_empty_nfa(NFA):
-                    NFA = new_NFA
-                    current_state = get_num_of_last_state(NFA) + 1
-
-                elif not detect_empty_nfa(new_NFA):
-                    NFA = {**NFA, **new_NFA}
-                    current_state = get_num_of_last_state(NFA) + 1
 
                 (current_outer_bracket, current_inner_brackets) = get_next_brackets(
                     regex, brackets
