@@ -19,6 +19,13 @@ def write_dict_to_json(d, filename):
         json.dump(new_dict, f)
 
 
+def read_json(filename):
+
+    with open(filename, 'r') as f:
+        state_dict = json.load(f)
+    return state_dict
+
+
 def match_2_chars(regex, char1, char2):
 
     matches = []
