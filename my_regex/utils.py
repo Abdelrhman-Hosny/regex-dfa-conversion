@@ -2,8 +2,21 @@ import json
 
 
 def write_dict_to_json(d, filename):
+    new_dict = {}
+    for k1, v1 in d.items():
+        if k1 == "startingState":
+            new_dict[k1] = v1
+            continue
+        new_dict[k1] = {}
+        for k2, v2 in v1.items():
+            if k2 == "acceptingState":
+                new_dict[k1][k2] = True
+                continue
+            new_dict[k1][k2] = []
+            for state in v2:
+                new_dict[k1][k2].append(state)
     with open(filename, "w") as f:
-        json.dump(d, f)
+        json.dump(new_dict, f)
 
 
 def match_2_chars(regex, char1, char2):
@@ -142,8 +155,8 @@ def remove_unnessasary_brackets(regex, outer_bracket, inner_brackets):
         if s2 - s1 == 1 + num_removed and e1 - e2 == 1 + num_removed:
             num_removed += 1
             inner_brackets.remove((s2, e2))
-            regex = regex[:e2] + regex[e2 + 1:]
-            regex = regex[:s2] + regex[s2 + 1:]
+            regex = regex[:e2] + regex[e2 + 1 :]
+            regex = regex[:s2] + regex[s2 + 1 :]
         else:
             i += 1
     return (outer_bracket, inner_brackets)
@@ -180,3 +193,44 @@ def detect_empty_nfa(NFA):
 
 def get_num_of_last_state(NFA):
     return max([int(x[1:]) for x in NFA.keys()])
+
+
+def detect_or_positions(regex):
+    """
+    Returns the bracket position of the ors
+    [3, 9] means that there are two ors, one in the bracket that starts at index 3
+    and another at bracket at index 9
+
+    [-1 , 3] means that there is one outside of the brackets, and one at the bracket
+    that starts at index 3
+    """
+    brackets = get_brackets(regex)
+    or_indices = [i for i, c in enumerate(regex) if c == "|"]
+    or_in_bracket = []
+    for or_index in or_indices:
+        belongs_to_bracket = -1
+        for s, e in brackets:
+            if s < or_index < e:
+                belongs_to_bracket = s
+                break
+            or_in_bracket.append(belongs_to_bracket)
+    return sorted(or_in_bracket)
+
+
+def get_split_indices_for_or_operation(regex):
+
+    brackets = list(get_brackets(regex))
+
+    or_location = [i for i, c in enumerate(regex) if c == "|"]
+
+    final_or_locations = []
+    for or_index in or_location:
+        temp = True
+        for outer, _ in brackets:
+            if outer[0] < or_index < outer[1]:
+                temp = False
+                break
+        if temp:
+            final_or_locations.append(or_index)
+
+    return final_or_locations
