@@ -3,8 +3,6 @@ from my_regex.utils import (
     add_key_val,
     get_brackets,
     get_next_brackets,
-    detect_empty_nfa,
-    get_num_of_last_state,
     get_split_indices_for_or_operation,
 )
 

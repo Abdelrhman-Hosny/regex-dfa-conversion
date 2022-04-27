@@ -162,8 +162,8 @@ def remove_unnessasary_brackets(regex, outer_bracket, inner_brackets):
         if s2 - s1 == 1 + num_removed and e1 - e2 == 1 + num_removed:
             num_removed += 1
             inner_brackets.remove((s2, e2))
-            regex = regex[:e2] + regex[e2 + 1 :]
-            regex = regex[:s2] + regex[s2 + 1 :]
+            regex = regex[:e2] + regex[e2 + 1:]
+            regex = regex[:s2] + regex[s2 + 1:]
         else:
             i += 1
     return (outer_bracket, inner_brackets)
@@ -187,41 +187,6 @@ def get_brackets(regex):
     validate_sorted_brackets(brackets)
 
     return (x for x in get_containing_brackets(brackets))
-
-
-def detect_empty_nfa(NFA):
-    if len(NFA) == 1:
-        dict_keys = NFA.keys()
-        val = NFA[list(dict_keys)[0]]
-        if val == {}:
-            return True
-    return False
-
-
-def get_num_of_last_state(NFA):
-    return max([int(x[1:]) for x in NFA.keys()])
-
-
-def detect_or_positions(regex):
-    """
-    Returns the bracket position of the ors
-    [3, 9] means that there are two ors, one in the bracket that starts at index 3
-    and another at bracket at index 9
-
-    [-1 , 3] means that there is one outside of the brackets, and one at the bracket
-    that starts at index 3
-    """
-    brackets = get_brackets(regex)
-    or_indices = [i for i, c in enumerate(regex) if c == "|"]
-    or_in_bracket = []
-    for or_index in or_indices:
-        belongs_to_bracket = -1
-        for s, e in brackets:
-            if s < or_index < e:
-                belongs_to_bracket = s
-                break
-            or_in_bracket.append(belongs_to_bracket)
-    return sorted(or_in_bracket)
 
 
 def get_split_indices_for_or_operation(regex):
