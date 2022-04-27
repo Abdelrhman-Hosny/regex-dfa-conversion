@@ -23,8 +23,8 @@ def construct_nfa(regex):
     return NFA
 
 
-# NFA = construct_nfa("(ab)*|cd")
-NFA = construct_nfa("bs|(ab)?|(eb)*|a")
+# NFA = construct_nfa("ba|b|a")
+NFA = construct_nfa("bs|(eb)*|a")
 write_dict_to_json(NFA, "nfa.json")
 print(NFA)
 draw_states(NFA)

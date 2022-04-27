@@ -101,7 +101,7 @@ def zero_or_more(regex, NFA, current_state, bracket_type=None, regex_fn=get_rege
     add_key_val(NFA, f"S{new_state}", EPSILON, f"S{new_state + 1}")
     NFA[f"S{new_state + 1}"] = dict()
     NFA = {**NFA, **new_NFA}
-    return new_state, NFA
+    return new_state + 1, NFA
 
 
 def one_or_more(regex, NFA, current_state, bracket_type=None, regex_fn=get_regex):
