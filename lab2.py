@@ -23,15 +23,16 @@ def construct_nfa(regex):
     return NFA
 
 
-NFA = construct_nfa("(a|b)*abb")
+# NFA = construct_nfa("(AB|C[A-Z])+")
+NFA = construct_nfa("(((AB)|C)[A-Z])+")
 print(f"NFA:\n{NFA}")
-DFA, accepting_states = convert_to_dfa(NFA)
+DFA, accepting_states_dfa = convert_to_dfa(NFA)
 print(f'DFA:\n{DFA}')
-minimized_DFA, accepting_states = minimize_dfa(DFA, accepting_states)
+minimized_DFA, accepting_states_dfa_min = minimize_dfa(DFA, accepting_states_dfa)
 write_dict_to_json(NFA, "nfa.json")
 write_dfa_to_json(DFA, "dfa.json")
 write_dfa_to_json(minimized_DFA, "minimized_dfa.json")
 # print(NFA)
 draw_states(NFA)
-draw_states_dfa(DFA, accepting_states)
-draw_states_dfa(minimized_DFA, accepting_states, "dfa_min")
+draw_states_dfa(DFA, accepting_states_dfa)
+draw_states_dfa(minimized_DFA, accepting_states_dfa_min, "dfa_min")
