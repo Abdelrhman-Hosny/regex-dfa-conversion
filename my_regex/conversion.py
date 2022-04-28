@@ -7,12 +7,15 @@ def convert_to_dfa(states_dict):
     start_state_nfa = states_dict["startingState"]
     start_state = epsilon_closure([start_state_nfa], states_dict)
 
-    return rename_dfa(generate_dfa(start_state, states_dict))
+    DFA, accepting_states = generate_dfa(start_state, states_dict)
+
+    return rename_dfa(DFA, accepting_states, frozenset(start_state))
 
 
 def generate_dfa(start_state, states_dict):
 
     dfa = {}
+    accepting_states = set()
     states_queue = [frozenset(start_state)]
     visited_states = set()
     while states_queue:
@@ -22,13 +25,14 @@ def generate_dfa(start_state, states_dict):
         moves = get_all_moves(current_states, states_dict)
         for k, v in moves.items():
             if k == "acceptingState":
+                accepting_states.add(current_states)
                 continue
             moves[k] = epsilon_closure(v, states_dict)
             if frozenset(moves[k]) not in visited_states:
                 add_key_val_dfa(dfa, current_states, k, frozenset(moves[k]))
                 states_queue.append(frozenset(moves[k]))
 
-    return dfa
+    return dfa, accepting_states
 
 
 def epsilon_closure(states, states_dict):

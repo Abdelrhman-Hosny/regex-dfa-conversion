@@ -23,9 +23,11 @@ def construct_nfa(regex):
 
 
 NFA = construct_nfa("ba*|b+|a?")
-DFA = convert_to_dfa(NFA)
+print(f"NFA:\n{NFA}")
+DFA, accepting_states = convert_to_dfa(NFA)
+print(f'DFA:\n{DFA}')
 write_dict_to_json(NFA, "nfa.json")
 write_dfa_to_json(DFA, "dfa.json")
 # print(NFA)
 draw_states(NFA)
-draw_states_dfa(DFA)
+draw_states_dfa(DFA, accepting_states)

@@ -6,7 +6,7 @@ def add_key_val_dfa(DFA, key1, key2, val):
     return DFA
 
 
-def rename_dfa(dfa):
+def rename_dfa(dfa, accepting_states, start_state):
 
     increment = 0
     visited = set()
@@ -24,9 +24,14 @@ def rename_dfa(dfa):
                 name_dict[state2] = increment
                 increment += 1
 
+    accepting_states = {name_dict[state] for state in accepting_states}
+    start_state = name_dict[start_state]
+
     for state1, transitions in dfa.items():
         new_dfa[name_dict[state1]] = {}
         for input_char, state2 in transitions.items():
             new_dfa[name_dict[state1]][input_char] = name_dict[state2]
 
-    return new_dfa
+    new_dfa["startingState"] = start_state
+
+    return new_dfa, accepting_states
