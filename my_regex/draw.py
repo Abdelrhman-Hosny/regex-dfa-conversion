@@ -1,6 +1,4 @@
 import networkx as nx
-import matplotlib.pyplot as plt
-from IPython.display import Image
 
 options = {
     "font_size": 36,
@@ -24,7 +22,7 @@ def draw_states(state_dict):
             for pointed_to_node in v1:
                 G.add_edge(pointing_node, pointed_to_node, label=node_input)
 
-    nx.drawing.nx_pydot.write_dot(G, 'nfa.dot')
+    nx.drawing.nx_pydot.write_dot(G, "nfa.dot")
 
 
 def draw_states_dfa(states_dict, accepting_states, name="dfa"):
@@ -39,4 +37,4 @@ def draw_states_dfa(states_dict, accepting_states, name="dfa"):
 
     for node in accepting_states:
         G.nodes[node]["shape"] = "doublecircle"
-    nx.drawing.nx_pydot.write_dot(G, name + '.dot')
+    nx.drawing.nx_pydot.write_dot(G, name + ".dot")

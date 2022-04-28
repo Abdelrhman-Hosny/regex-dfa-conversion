@@ -1,6 +1,3 @@
-from dataclasses import dataclass
-
-
 def get_inputs_and_non_acc_states(state_dict, accepting_states):
 
     non_accepting_states = set()
@@ -41,6 +38,7 @@ class MySet:
 
     def __iter__(self):
         return iter(self.my_set)
+
 
 def get_groups(state_dict, TT, dfa_inputs):
 
@@ -88,9 +86,11 @@ def minimize_dfa(state_dict, accepting_states):
         state_dict, accepting_states
     )
 
-    TT = get_groups(state_dict, [MySet(non_accepting_states), MySet(accepting_states)], dfa_inputs)
+    TT = get_groups(
+        state_dict, [MySet(non_accepting_states), MySet(accepting_states)], dfa_inputs
+    )
 
-    TT = [ x for x in TT if len(x) > 1 ]
+    TT = [x for x in TT if len(x) > 1]
 
     renaming_dict = {}
     for group in TT:
@@ -104,6 +104,8 @@ def minimize_dfa(state_dict, accepting_states):
         else:
             new_dfa[renaming_dict.get(state, state)] = {}
             for input_char, state2 in v.items():
-                new_dfa[renaming_dict.get(state, state)][input_char] = renaming_dict.get(state2, state2)
-    
+                new_dfa[renaming_dict.get(state, state)][
+                    input_char
+                ] = renaming_dict.get(state2, state2)
+
     return new_dfa, {renaming_dict.get(state, state) for state in accepting_states}

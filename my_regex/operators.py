@@ -45,9 +45,7 @@ def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
                     )
                     i += 1
                 else:
-                    set_alnum_state(
-                        char, NFA, current_state, current_state + 1
-                    )
+                    set_alnum_state(char, NFA, current_state, current_state + 1)
                     if bracket_type == "(" or bracket_type is None:
                         current_state += 1
 

@@ -2,7 +2,7 @@ import json
 
 
 def write_dfa_to_json(d, filename):
-    with open(filename, 'w') as f:
+    with open(filename, "w") as f:
         json.dump(d, f)
 
 
@@ -26,7 +26,7 @@ def write_dict_to_json(d, filename):
 
 def read_json(filename):
 
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         state_dict = json.load(f)
     return state_dict
 
