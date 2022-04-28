@@ -34,26 +34,14 @@ def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
         )
         while i < len(regex):
             # checking for alnum
-            for char in regex[i:]:
-                # if char is alphanumeric, we add the transition else break
-                if not char.isalnum():
-                    break
-
-                if (i + 1) < len(regex) and regex[i + 1] in regex_operators.keys():
-                    current_state, _ = regex_operators[regex[i + 1]](
-                        char, NFA, current_state, regex_fn=get_regex
-                    )
-                    i += 1
-                else:
-                    set_alnum_state(char, NFA, current_state, current_state + 1)
-                    if bracket_type == "(" or bracket_type is None:
-                        current_state += 1
-
-                i += 1
             if bracket_type == "[":
+                # TODO: Process [A-Z]
+                for char in regex[i:]:
+                    set_alnum_state(char, NFA, current_state, current_state + 1)
                 current_state += 1
+                break
             # checking for brackets
-            if current_outer_bracket and i == current_outer_bracket[0]:
+            elif current_outer_bracket and i == current_outer_bracket[0]:
 
                 if (current_outer_bracket[1] + 1) < len(regex) and regex[
                     current_outer_bracket[1] + 1
@@ -75,12 +63,28 @@ def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
                         NFA,
                         current_state,
                         True,
+                        bracket_type=regex[i]
                     )
                     i = current_outer_bracket[1] + 1
 
                 (current_outer_bracket, current_inner_brackets) = get_next_brackets(
                     regex, brackets
                 )
+
+            else:
+
+                char = regex[i]
+                if (i + 1) < len(regex) and regex[i + 1] in regex_operators.keys():
+                    current_state, _ = regex_operators[regex[i + 1]](
+                        char, NFA, current_state, regex_fn=get_regex
+                    )
+                    i += 1
+                else:
+                    set_alnum_state(char, NFA, current_state, current_state + 1)
+                    if bracket_type == "(" or bracket_type is None:
+                        current_state += 1
+
+                i += 1
 
     return current_state, NFA
 
