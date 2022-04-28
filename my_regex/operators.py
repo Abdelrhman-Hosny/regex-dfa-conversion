@@ -74,7 +74,7 @@ def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
                     # we are at the start of the outer bracket
                     current_state, new_NFA = get_regex(
                         regex[i + 1: current_outer_bracket[1]],
-                        {f"S{current_state}": {}},
+                        NFA,
                         current_state,
                         True,
                     )
