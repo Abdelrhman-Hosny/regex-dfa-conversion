@@ -55,6 +55,9 @@ def get_groups(state_dict, TT, dfa_inputs):
 
                 state_destination = []
                 for output in outputs:
+                    if output is None:
+                        state_destination.append(None)
+                        continue
                     for state2 in TT:
                         if state2.contains(output):
                             state_destination.append(state2.representative)
