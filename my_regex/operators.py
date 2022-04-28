@@ -46,7 +46,7 @@ def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
                     i += 1
                 else:
                     set_alnum_state(
-                        char, NFA, f"S{current_state}", f"S{current_state + 1}"
+                        char, NFA, current_state, current_state + 1
                     )
                     if bracket_type == "(" or bracket_type is None:
                         current_state += 1
@@ -89,15 +89,15 @@ def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
 
 def zero_or_more(regex, NFA, current_state, bracket_type=None, regex_fn=get_regex):
 
-    add_key_val(NFA, f"S{current_state}", EPSILON, f"S{current_state + 1}")
+    add_key_val(NFA, current_state, EPSILON, current_state + 1)
     current_state += 1
     start_state = current_state
     new_state, new_NFA = regex_fn(regex, NFA, start_state, bracket_type=bracket_type)
 
-    add_key_val(NFA, f"S{start_state}", EPSILON, f"S{new_state + 1}")
-    add_key_val(NFA, f"S{new_state}", EPSILON, f"S{start_state}")
-    add_key_val(NFA, f"S{new_state}", EPSILON, f"S{new_state + 1}")
-    NFA[f"S{new_state + 1}"] = dict()
+    add_key_val(NFA, start_state, EPSILON, new_state + 1)
+    add_key_val(NFA, new_state, EPSILON, start_state)
+    add_key_val(NFA, new_state, EPSILON, new_state + 1)
+    NFA[new_state + 1] = dict()
     NFA = {**NFA, **new_NFA}
     return new_state + 1, NFA
 
@@ -106,7 +106,7 @@ def one_or_more(regex, NFA, current_state, bracket_type=None, regex_fn=get_regex
     start_state = current_state
     new_state, new_NFA = regex_fn(regex, NFA, current_state, bracket_type=bracket_type)
 
-    add_key_val(NFA, f"S{new_state}", EPSILON, f"S{start_state}")
+    add_key_val(NFA, new_state, EPSILON, start_state)
     return new_state, NFA
 
 
@@ -117,7 +117,7 @@ def set_alnum_state(char, NFA, current_state, next_state):
 def optional(regex, NFA, current_state, bracket_type=None, regex_fn=get_regex):
     start_state = current_state
     current_state, NFA = regex_fn(regex, NFA, current_state, bracket_type=bracket_type)
-    add_key_val(NFA, f"S{start_state}", EPSILON, f"S{current_state}")
+    add_key_val(NFA, start_state, EPSILON, current_state)
     return current_state, NFA
 
 
@@ -128,14 +128,14 @@ def or_operator(
     end_states = []
     for regex in regex_arr:
         current_state += 1
-        add_key_val(NFA, f"S{start_state}", EPSILON, f"S{current_state}")
+        add_key_val(NFA, start_state, EPSILON, current_state)
         current_state, NFA = regex_fn(
             regex, NFA, current_state, bracket_type=bracket_type
         )
         end_states.append(current_state)
     current_state += 1
     for end_state in end_states:
-        add_key_val(NFA, f"S{end_state}", EPSILON, f"S{current_state}")
+        add_key_val(NFA, end_state, EPSILON, current_state)
 
     return current_state, NFA
 
