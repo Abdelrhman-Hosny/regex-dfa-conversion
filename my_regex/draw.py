@@ -27,7 +27,7 @@ def draw_states(state_dict):
     nx.drawing.nx_pydot.write_dot(G, 'nfa.dot')
 
 
-def draw_states_dfa(states_dict, accepting_states):
+def draw_states_dfa(states_dict, accepting_states, name="dfa"):
     G = nx.DiGraph()
     for pointing_node, v in states_dict.items():
         if pointing_node == "startingState":
@@ -39,4 +39,4 @@ def draw_states_dfa(states_dict, accepting_states):
 
     for node in accepting_states:
         G.nodes[node]["shape"] = "doublecircle"
-    nx.drawing.nx_pydot.write_dot(G, 'dfa.dot')
+    nx.drawing.nx_pydot.write_dot(G, name + '.dot')
