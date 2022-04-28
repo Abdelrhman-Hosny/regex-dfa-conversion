@@ -1,15 +1,34 @@
 from my_regex import EPSILON
-from collections import deque
-from copy import deepcopy
+from my_regex.conversion_utils import add_key_val_dfa, rename_dfa
 
 
 def convert_to_dfa(states_dict):
 
     start_state_nfa = states_dict["startingState"]
-    start_state = epsilon_closure(deque([start_state_nfa]), states_dict)
+    start_state = epsilon_closure([start_state_nfa], states_dict)
 
-    print(start_state)
-    return epsilon_closure(deque(move(start_state, 'b', states_dict)), states_dict)
+    return rename_dfa(generate_dfa(start_state, states_dict))
+
+
+def generate_dfa(start_state, states_dict):
+
+    dfa = {}
+    states_queue = [frozenset(start_state)]
+    visited_states = set()
+    while states_queue:
+        current_states = states_queue.pop()
+        visited_states.add(current_states)
+
+        moves = get_all_moves(current_states, states_dict)
+        for k, v in moves.items():
+            if k == "acceptingState":
+                continue
+            moves[k] = epsilon_closure(v, states_dict)
+            if frozenset(moves[k]) not in visited_states:
+                add_key_val_dfa(dfa, current_states, k, frozenset(moves[k]))
+                states_queue.append(frozenset(moves[k]))
+
+    return dfa
 
 
 def epsilon_closure(states, states_dict):
@@ -17,15 +36,16 @@ def epsilon_closure(states, states_dict):
     Finds the epsilon closure of a state.
     """
 
+    states_list = list(states)
     visited_states = set()
 
-    while states:
-        current_state = states.popleft()
+    while states_list:
+        current_state = states_list.pop()
         visited_states.add(current_state)
 
         for state in states_dict[current_state].get(EPSILON, []):
             if state not in visited_states:
-                states.append(state)
+                states_list.append(state)
 
     return visited_states
 
@@ -38,3 +58,15 @@ def move(states, char, states_dict):
 
     return next_states
 
+
+def get_all_moves(states, states_dict):
+
+    moves = {}
+    for state in states:
+        for char_input in states_dict[state].keys():
+            if char_input != EPSILON:
+                moves[char_input] = moves.get(char_input, set()).union(
+                    states_dict[state][char_input]
+                )
+
+    return moves
