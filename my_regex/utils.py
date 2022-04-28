@@ -63,63 +63,6 @@ def get_matched_square_brackets(regex):
     return match_2_chars(regex, "[", "]")
 
 
-def validate_brackets(square_brackets, parenthesis):
-    """
-    Makes sure that brackets don't intersect
-    e.g. ([)]
-    """
-    validate_square_brackets(square_brackets)
-    brackets = square_brackets + parenthesis
-    brackets = sorted(brackets, key=lambda x: x[0])
-
-    intersecting_brackets = sum(
-        [
-            True if s1 < s2 < e1 and e1 < e2 else False
-            for s1, e1 in brackets
-            for s2, e2 in brackets
-        ]
-    )
-
-    if intersecting_brackets != 0:
-        raise Exception("Brackets intersect")
-
-
-def validate_square_brackets(square_brackets):
-    """
-    Makes sure that brackets don't intersect
-    [ab[cd]] not allowed
-    """
-    intersecting_brackets = sum(
-        [
-            True if s1 < s2 < e1 else False
-            for s1, e1 in square_brackets
-            for s2, e2 in square_brackets
-        ]
-    )
-
-    if intersecting_brackets != 0:
-        raise Exception("Square brackets intersect")
-
-
-def validate_sorted_brackets(brackets):
-    """
-    Input is a sorted list of tuples containing bracket indices.
-    Makes sure that brackets don't intersect
-    e.g.    ([)] not allowed
-            [()] allowed
-    """
-    intersecting_brackets = sum(
-        [
-            True if s1 < s2 < e1 and e1 < e2 else False
-            for s1, e1 in brackets
-            for s2, e2 in brackets
-        ]
-    )
-
-    if intersecting_brackets != 0:
-        raise Exception("Brackets intersect")
-
-
 def get_containing_brackets(brackets):
     """
     Returns a list, each element containts a tuple and a list
@@ -189,7 +132,6 @@ def get_brackets(regex):
     brackets = get_matched_square_brackets(regex) + get_matched_parenthesis(regex)
 
     brackets = sorted(brackets, key=lambda x: x[0])
-    validate_sorted_brackets(brackets)
 
     return (x for x in get_containing_brackets(brackets))
 

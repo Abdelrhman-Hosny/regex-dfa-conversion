@@ -36,6 +36,24 @@ def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
             # checking for alnum
             if bracket_type == "[":
                 # TODO: Process [A-Z]
+                while regex.find("-") != -1:
+                    index = regex.find("-")
+                    if index == 0:
+                        set_alnum_state(regex[0], NFA, current_state, current_state + 1)
+                        regex = regex[index + 1:]
+                        continue
+                    elif index == len(regex) - 1:
+                        set_alnum_state(regex[-1], NFA, current_state, current_state + 1)
+                        regex = regex[:index]
+                        continue
+                    else:
+                        char_before, char_after = regex[index - 1], regex[index + 1]
+                        if ord(char_before) > ord(char_after):
+                            raise Exception(
+                                f"Invalid {char_before}-{char_after} range"
+                            )
+                        set_alnum_state(regex[index - 1: index + 2], NFA, current_state, current_state + 1)
+                        regex = regex[:index - 1] + regex[index + 2:]
                 for char in regex[i:]:
                     set_alnum_state(char, NFA, current_state, current_state + 1)
                 current_state += 1
