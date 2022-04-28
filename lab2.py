@@ -1,4 +1,5 @@
 from my_regex.conversion import convert_to_dfa
+from my_regex.minimization import minimize_dfa
 from my_regex.utils import (
     write_dict_to_json,
     write_dfa_to_json,
@@ -22,12 +23,15 @@ def construct_nfa(regex):
     return NFA
 
 
-NFA = construct_nfa("ba*|b+|a?")
+NFA = construct_nfa("(a|b)*abb")
 print(f"NFA:\n{NFA}")
 DFA, accepting_states = convert_to_dfa(NFA)
 print(f'DFA:\n{DFA}')
+minimized_DFA, accepting_states = minimize_dfa(DFA, accepting_states)
 write_dict_to_json(NFA, "nfa.json")
 write_dfa_to_json(DFA, "dfa.json")
+write_dfa_to_json(minimized_DFA, "minimized_dfa.json")
 # print(NFA)
 draw_states(NFA)
 draw_states_dfa(DFA, accepting_states)
+draw_states_dfa(minimized_DFA, accepting_states, "dfa_min")
