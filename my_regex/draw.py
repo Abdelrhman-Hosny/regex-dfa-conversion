@@ -26,7 +26,7 @@ def draw_states(state_dict):
 
 
 def draw_states_dfa(states_dict, accepting_states, name="dfa"):
-    G = nx.DiGraph()
+    G = nx.MultiDiGraph()
     for pointing_node, v in states_dict.items():
         if pointing_node == "startingState":
             continue
