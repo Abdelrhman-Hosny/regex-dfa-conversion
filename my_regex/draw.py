@@ -23,4 +23,17 @@ def draw_states(state_dict):
             for pointed_to_node in v1:
                 G.add_edge(pointing_node, pointed_to_node, label=node_input)
 
-    nx.drawing.nx_pydot.write_dot(G, 'multi.dot')
+    nx.drawing.nx_pydot.write_dot(G, 'nfa.dot')
+
+
+def draw_states_dfa(states_dict):
+    G = nx.DiGraph()
+    for pointing_node, v in states_dict.items():
+        if pointing_node == "startingState":
+            continue
+        for node_input, pointed_to_node in v.items():
+            if node_input == "acceptingState":
+                continue
+            G.add_edge(pointing_node, pointed_to_node, label=node_input)
+
+    nx.drawing.nx_pydot.write_dot(G, 'dfa.dot')
