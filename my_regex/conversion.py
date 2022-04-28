@@ -29,7 +29,7 @@ def generate_dfa(start_state, states_dict):
                 continue
             moves[k] = epsilon_closure(v, states_dict)
             add_key_val_dfa(dfa, current_states, k, frozenset(moves[k]))
-            if frozenset(moves[k]) not in visited_states:
+            if frozenset(moves[k]) not in visited_states and frozenset(moves[k]) not in states_queue:
                 states_queue.append(frozenset(moves[k]))
 
     return dfa, accepting_states
