@@ -1,4 +1,4 @@
-from my_regex import EPSILON
+from my_regex import EPSILON, ESCAPED_CHARS
 from my_regex.utils import (
     add_key_val,
     get_brackets,
@@ -35,7 +35,7 @@ def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
         while i < len(regex):
             # checking for alnum
             if bracket_type == "[":
-                # TODO: Process [A-Z]
+                
                 while regex.find("-") != -1:
                     index = regex.find("-")
                     if index == 0:
@@ -88,10 +88,23 @@ def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
                 (current_outer_bracket, current_inner_brackets) = get_next_brackets(
                     regex, brackets
                 )
-
+            elif regex[i] == '\\' and bracket_type != "[":
+                if i + 1 >= len(regex):
+                    raise Exception("Escaped character found at end of regex/subregex")
+                else:
+                    char = regex[i+1]
+                    if char in ESCAPED_CHARS:
+                        set_alnum_state(char, NFA, current_state, current_state + 1)
+                    else:
+                        raise Exception(f"Invalid escaped character: \{char}")
+                    current_state += 1
+                    i += 2
             else:
 
                 char = regex[i]
+                if char in ESCAPED_CHARS:
+                    raise Exception(f"Escape character is needed before {char}")
+
                 if (i + 1) < len(regex) and regex[i + 1] in regex_operators.keys():
                     current_state, _ = regex_operators[regex[i + 1]](
                         char, NFA, current_state, regex_fn=get_regex
