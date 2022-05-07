@@ -51,6 +51,8 @@ def get_groups(state_dict, TT, dfa_inputs):
             for dfa_input in dfa_inputs:
                 outputs = []
                 for state1 in state_set.my_set:
+                    if (state_dict.get(state1, None) is None):
+                        state_dict[state1] = {}
                     outputs.append(state_dict[state1].get(dfa_input, None))
 
                 state_destination = []
