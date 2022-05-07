@@ -1,4 +1,3 @@
-# read input from command line
 import sys
 from my_regex.operators import construct_nfa
 from my_regex.utils import write_dict_to_json

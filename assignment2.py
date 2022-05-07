@@ -3,7 +3,6 @@ from my_regex.conversion import convert_to_dfa
 from my_regex.conversion_utils import read_json, write_dfa_to_json
 from my_regex.minimization import minimize_dfa
 from my_regex.draw import draw_states_dfa
-from my_regex.operators import construct_nfa
 
 def change_keys_to_ints(states_dict):
     new_states_dict = {}
