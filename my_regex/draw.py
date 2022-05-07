@@ -1,4 +1,6 @@
 import networkx as nx
+from subprocess import check_call
+from PIL import Image
 
 options = {
     "font_size": 36,
@@ -23,7 +25,12 @@ def draw_states(state_dict):
                 G.add_edge(pointing_node, pointed_to_node, label=node_input)
 
     nx.drawing.nx_pydot.write_dot(G, "nfa.dot")
+    # (graph,) = pydot.graph_from_dot_file('nfa.dot')
+    # graph.write_png('nfa.png')
 
+    check_call(['dot','-Tpng','nfa.dot','-o','nfa.png'])
+    img = Image.open("nfa.png")
+    img.show()
 
 def draw_states_dfa(states_dict, accepting_states, name="dfa"):
     G = nx.MultiDiGraph()
@@ -38,3 +45,8 @@ def draw_states_dfa(states_dict, accepting_states, name="dfa"):
     for node in accepting_states:
         G.nodes[node]["shape"] = "doublecircle"
     nx.drawing.nx_pydot.write_dot(G, name + ".dot")
+    check_call(['dot','-Tpng',f'{name}.dot','-o',f'{name}.png'])
+    # (graph,) = pydot.graph_from_dot_file(name + ".dot")
+    # graph.write_png(name + ".png")
+    img = Image.open(f"{name}.png")
+    img.show()
