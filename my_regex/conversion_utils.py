@@ -1,9 +1,17 @@
+import json
+
+
 def add_key_val_dfa(DFA, key1, key2, val):
     if not DFA.get(key1):
         DFA[key1] = {}
     if not DFA[key1].get(key2):
         DFA[key1][key2] = val
     return DFA
+
+
+def write_dfa_to_json(d, filename):
+    with open(filename, "w") as f:
+        json.dump(d, f)
 
 
 def rename_dfa(dfa, accepting_states, start_state):
