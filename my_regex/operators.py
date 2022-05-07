@@ -6,6 +6,18 @@ from my_regex.utils import (
     get_split_indices_for_or_operation,
 )
 
+def construct_nfa(regex):
+    """
+    Construct an NFA from a regex.
+    """
+    NFA = {0: {}}
+
+    current_state, NFA = get_regex(regex, NFA, 0)
+    add_key_val(NFA, current_state, 'acceptingState', True)
+    NFA["startingState"] = 0
+    return NFA
+
+
 
 def get_regex(regex, NFA, current_state, in_brackets=False, bracket_type=None):
 
